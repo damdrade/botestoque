@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Envio de Imagem</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="upload-container" id="dropArea">
+    <img src="whatsapp-logo.png" alt="WhatsApp Logo" class="logo" />
+    <h2>Envie uma imagem</h2>
+    <p>Arraste uma imagem ou clique para selecionar</p>
+
+    <form id="uploadForm">
+      <input type="file" id="imageInput" accept="image/*" required />
+      <br>
+      <button type="submit">Enviar</button>
+    </form>
+
+    <div id="imageUrl"></div>
+    <img id="imagePreview" style="display: none;">
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const imageInput = document.getElementById('imageInput');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    dropArea.addEventListener('dragover', () => dropArea.classList.add('dragover'));
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+    dropArea.addEventListener('drop', (e) => {
+      dropArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        imageInput.files = files;
+      }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append('image', imageInput.files[0]);
+
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.imageUrl) {
+          const imagePreview = document.getElementById('imagePreview');
+          const imageUrl = document.getElementById('imageUrl');
+
+          imagePreview.src = data.imageUrl;
+          imagePreview.style.display = 'block';
+          imageUrl.textContent = `Imagem enviada: ${data.imageUrl}`;
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao enviar a imagem');
+      }
+    });
+  </script>
+</body>
+</html>

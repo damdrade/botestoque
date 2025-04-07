@@ -1,3 +1,5 @@
 .env
 .env.local
 .env.*.local
+src/uploads/
+node_modules
