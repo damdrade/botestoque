@@ -19,7 +19,9 @@ body {
     padding: 30px;
     border-radius: 12px;
     transition: background-color 0.3s, border-color 0.3s;
-  }
+    max-width: 900px; /* aumentado */
+    margin: 0 auto;
+  }  
   
   .upload-container.dragover {
     background-color: #e8f5e9;
@@ -60,4 +62,19 @@ body {
     margin-top: 10px;
     font-size: 0.9em;
   }
+
+  #tabelaProdutos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  #tabelaProdutos th,
+  #tabelaProdutos td {
+    padding: 12px;
+    border: 1px solid #2e7d32;
+    text-align: left;
+    font-size: 16px;
+  }
+  
   

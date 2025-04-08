@@ -20,6 +20,23 @@
 
     <div id="imageUrl"></div>
     <img id="imagePreview" style="display: none;">
+
+    <!-- 🧾 Tabela de resultado -->
+    <div id="resultado" style="margin-top: 30px; display: none;">
+      <h3>Produtos identificados</h3>
+      <table id="tabelaProdutos" border="1" cellpadding="8" cellspacing="0" style="width: 100%; text-align: left;">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Linhas vão aparecer aqui -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -47,7 +64,8 @@
       e.preventDefault();
 
       const formData = new FormData();
-      formData.append('image', imageInput.files[0]);
+      const fileInput = document.getElementById('imageInput');
+      formData.append('image', fileInput.files[0]);
 
       try {
         const response = await fetch('/upload', {
@@ -55,16 +73,35 @@
           body: formData
         });
 
-        const data = await response.json();
-
-        if (data.imageUrl) {
-          const imagePreview = document.getElementById('imagePreview');
-          const imageUrl = document.getElementById('imageUrl');
-
-          imagePreview.src = data.imageUrl;
-          imagePreview.style.display = 'block';
-          imageUrl.textContent = `Imagem enviada: ${data.imageUrl}`;
+        if (!response.ok) {
+          const erroTexto = await response.text();
+          throw new Error(`Erro no servidor: ${erroTexto}`);
         }
+
+        const data = await response.json();
+        const texto = data.resposta;
+
+        const linhas = texto.split('\n').filter(linha =>
+        linha.includes('|') && linha.split('|').length === 3
+        );
+
+        const tabela = document.querySelector('#tabelaProdutos tbody');
+        tabela.innerHTML = '';
+        document.getElementById('resultado').style.display = 'block';
+
+        linhas.forEach(linha => {
+        const [produto, quantidade, valor] = linha.split('|').map(parte => parte.trim());
+
+        const tr = document.createElement('tr');
+        [produto, quantidade, valor].forEach(campo => {
+            const td = document.createElement('td');
+            td.textContent = campo;
+            tr.appendChild(td);
+        });
+
+        tabela.appendChild(tr);
+        });
+
       } catch (error) {
         console.error('Erro:', error);
         alert('Erro ao enviar a imagem');

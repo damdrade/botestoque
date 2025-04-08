@@ -22,8 +22,6 @@ app.post('/processar', async (req, res) => {
     const caminho = path.join(__dirname, 'src', 'uploads', path.basename(req.body.imagem));
     const base64 = fs.readFileSync(caminho, { encoding: 'base64' });
 
-    console.log('-----------------')
-    console.log(base64)
 
     if (!base64 || base64.length < 50) {
       console.error("Imagem vazia ou inválida.");
@@ -38,7 +36,17 @@ app.post('/processar', async (req, res) => {
           {
             role: 'user',
             content: [
-              { type: 'text', content: 'Leia o conteúdo desta imagem:' },
+              { type: 'text', text: `Esta imagem contém uma nota fiscal. Extraia e liste apenas os produtos comprados, com quantidade e valor, no seguinte formato:
+
+                                      [nome do produto] | [quantidade e unidade] | [valor em R$]
+                                      
+                                      Exemplo:
+                                      Arroz 1kg | 2 UN | R$ 9,80
+                                      Feijão Preto | 1 UN | R$ 8,50
+                                      Pão de Queijo | 0.3750 KG | R$ 20,50
+                                      
+                                      ⚠️ Não inclua valores totais, tributos, nem repita a palavra "produto", "quantidade" ou "valor". Apenas a lista dos itens conforme o modelo acima.`
+                                      },
               {
                 type: 'image_url',
                 image_url: {

@@ -48,7 +48,8 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 });
 
     const resultado = await resposta.json();
-    res.send(`<pre>${resultado.resposta}</pre>`);
+    // res.send(`<pre>${resultado.resposta}</pre>`);
+    res.json({ resposta: resultado.resposta });
 });
 
 
