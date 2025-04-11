@@ -36,16 +36,27 @@ app.post('/processar', async (req, res) => {
           {
             role: 'user',
             content: [
-              { type: 'text', text: `Esta imagem contém uma nota fiscal. Extraia e liste apenas os produtos comprados, com quantidade e valor, no seguinte formato:
+              { type: 'text', text: `Esta imagem contém uma nota fiscal.
 
-                                      [nome do produto] | [quantidade e unidade] | [valor em R$]
-                                      
-                                      Exemplo:
-                                      Arroz 1kg | 2 UN | R$ 9,80
-                                      Feijão Preto | 1 UN | R$ 8,50
-                                      Pão de Queijo | 0.3750 KG | R$ 20,50
-                                      
-                                      ⚠️ Não inclua valores totais, tributos, nem repita a palavra "produto", "quantidade" ou "valor". Apenas a lista dos itens conforme o modelo acima.`
+Extraia e liste apenas os produtos comprados, com as seguintes informações:
+- Nome do produto
+- Quantidade com unidade (ex: 1 UN, 0.3750 KG)
+- Valor em reais (formato: R$ X,XX)
+
+Liste no formato abaixo (uma linha por produto):
+
+[nome do produto] | [quantidade e unidade] | [valor em R$]
+
+Exemplo:
+Arroz 1kg | 2 UN | R$ 9,80  
+Feijão Preto | 1 UN | R$ 8,50  
+Pão de Queijo | 0.3750 KG | R$ 20,50  
+
+⚠️ Atenção:
+- Não inclua cabeçalhos, totais, tributos, códigos ou descrições longas
+- Ignore colunas que não sejam nome, quantidade e valor
+- Se houver cabeçalho na imagem, use-o para se guiar, mas **não o inclua no resultado**
+- Evite duplicar informações ou repetir palavras como "produto", "quantidade" ou "valor"`
                                       },
               {
                 type: 'image_url',
